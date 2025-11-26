@@ -1,0 +1,5 @@
+{
+  "name": "Codacol Notes",
+  "description": "An intelligent note-taking application that uses Gemini to transform natural language into structured, tagged, and actionable note cards.",
+  "requestFramePermissions": []
+}
