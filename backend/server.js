@@ -20,21 +20,34 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // --- Middleware ---
-const allowedOrigins = [
-  process.env.WEB_APP_URL
-].filter(Boolean);
+const corsOptionsDelegate = (req, callback) => {
+  const origin = req.header('Origin');
+  let corsOptions = { credentials: true };
+  
+  if (!origin) {
+    corsOptions.origin = true;
+    return callback(null, corsOptions);
+  }
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+  const host = req.header('Host');
+  const isSameOrigin = host && origin.includes(host);
+  
+  const allowedOrigins = [
+    process.env.WEB_APP_URL,
+    'http://localhost:5173',
+    'http://localhost:5000'
+  ].filter(Boolean);
+
+  if (isSameOrigin || allowedOrigins.includes(origin)) {
+    corsOptions.origin = true;
+  } else {
+    corsOptions.origin = false;
+  }
+  
+  callback(null, corsOptions);
+};
+
+app.use(cors(corsOptionsDelegate));
 
 app.use(express.json());
 

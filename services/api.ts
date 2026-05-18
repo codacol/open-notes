@@ -1,7 +1,15 @@
 
 import { User, Note, NoteType } from '../types';
 
-const API_BASE_URL = process.env.VITE_API_URL;
+const getApiBaseUrl = () => {
+  const url = process.env.VITE_API_URL;
+  if (url && url !== 'undefined') {
+    return url;
+  }
+  return '/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Helper to generate IDs for local items like Todos
 export const generateId = (): string => {
